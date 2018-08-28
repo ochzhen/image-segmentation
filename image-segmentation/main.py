@@ -12,6 +12,7 @@ def main():
     c0 = int(sys.argv[3])
     r1 = int(sys.argv[4])
     c1 = int(sys.argv[5])
+    save_to = sys.argv[6]
 
     img = image.ImageRegion(path, r0, c0, r1, c1)
     
@@ -28,9 +29,9 @@ def main():
     for v in border_finder.border_vertices((s, t)):
         img.set_yellow(v)
     
-    img.show()
+    img.show(save_to)
     img.wait_key()
-    img.save('samples/result.png')
+    img.save(save_to)
     
 
 if __name__ == '__main__':

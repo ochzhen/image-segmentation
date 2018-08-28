@@ -12,7 +12,8 @@ class ImageRegion:
         self._cc = (c0 + c1) / 2
         self.deltas = [(0, 1), (1, -1), (1, 0), (1, 1)]
         self._alpha = 8
-        self._beta = 80 / self.max_rgb_distance()
+        rgb_distance = self.max_rgb_distance()
+        self._beta = 80 / rgb_distance if rgb_distance > 0 else 1
         self._binary_coef = 100000000
         self._unary_coef = 100
     
@@ -81,13 +82,13 @@ class ImageRegion:
     
     def set_yellow(self, v_id):
         r, c = self.get_coordinate(v_id)
-        self.img[c, r] = [0, 255, 255]
+        self.img[r, c] = [0, 255, 255]
     
     def save(self, path: str):
         cv2.imwrite(path, self.img)
     
-    def show(self):
-        cv2.imshow('image', self.img)
+    def show(self, title):
+        cv2.imshow(title, self.img)
     
     def close(self):
         cv2.destroyAllWindows()
