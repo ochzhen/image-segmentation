@@ -14,7 +14,7 @@ class Graph:
         self._adj[w].append(edge)
 
     def adj(self, vertex: int):
-        return iter(self._adj[vertex])
+        return self._adj[vertex]
     
     def vertices(self):
         return self._vertices

@@ -6,6 +6,7 @@ import GraphBuilder as gb
 import processing as algs
 import ImageRegion as image
 
+
 def main():
     path = sys.argv[1]
     r0 = int(sys.argv[2])
@@ -13,6 +14,7 @@ def main():
     r1 = int(sys.argv[4])
     c1 = int(sys.argv[5])
     save_to = sys.argv[6]
+    alg = sys.argv[7]
 
     img = image.ImageRegion(path, r0, c0, r1, c1)
     
@@ -21,11 +23,17 @@ def main():
     
     start_time = time.time()
     
-    flow_finder = algs.FordFulkerson(graph, s, t)
+    if alg == 'ff':
+        flow_finder = algs.FordFulkerson(graph, s, t)
+    else:
+        flow_finder = algs.Dinic(graph, s, t)
+    flow_finder.process()
 
     print('Elapsed seconds: {0}'.format(time.time() - start_time))
 
-    border_finder = algs.BorderFinder(flow_finder)
+    print('max flow: {0}'.format(flow_finder.flow()))
+
+    border_finder = algs.BorderFinder(graph, s)
     for v in border_finder.border_vertices((s, t)):
         img.set_yellow(v)
     
