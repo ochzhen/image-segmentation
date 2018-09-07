@@ -23,7 +23,6 @@ class Dinic:
                 if delta == 0:
                     break
                 print('flow: {0}'.format(self._flow))
-                
     
 
     def _has_augmenting_path(self, s: int, t: int):

@@ -25,8 +25,10 @@ def main():
     
     if alg == 'ff':
         flow_finder = algs.FordFulkerson(graph, s, t)
+    elif alg == 'pp':
+        flow_finder = algs.PreflowPush(graph, s, t)
     else:
-        flow_finder = algs.Dinic(graph, s, t)
+        flow_finder = algs.Dinic(graph, s, t) 
     flow_finder.process()
 
     print('Elapsed seconds: {0}'.format(time.time() - start_time))

@@ -15,7 +15,7 @@ class ImageRegion:
         rgb_distance = self.max_rgb_distance()
         self._beta = 80 / rgb_distance if rgb_distance > 0 else 1
         self._binary_coef = 100000000
-        self._unary_coef = 100
+        self._unary_coef = 1000
     
     def max_rgb_distance(self):
         max_distance = float('-inf')
@@ -57,10 +57,17 @@ class ImageRegion:
         return r + self._r0, c + self._c0
 
     def unary_foreground(self, r, c):
+        if self._is_border_pixel(r, c):
+            return 0
         return math.ceil(self._unary_coef * (1 - self._unary_background(r, c)))
 
     def unary_background(self, r, c):
+        if self._is_border_pixel(r, c):
+            return 1000000000000
         return math.ceil(self._unary_coef * self._unary_background(r, c))
+
+    def _is_border_pixel(self, r, c):
+        return r == self._r0 or r == self._r1 or c == self._c0 or c == self._c1
 
     def _unary_background(self, r, c):
         return self.distance_to_center(r, c) / self.distance_to_center(self.r0(), self.c0())
