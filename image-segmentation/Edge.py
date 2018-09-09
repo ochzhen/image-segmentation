@@ -5,23 +5,18 @@ class Edge:
         self._capacity = capacity
         self._flow = 0
 
-    
     def start(self):
         return self._source
 
-    
     def end(self):
         return self._sink
-    
-    
+
     def capacity(self):
         return self._capacity
-    
-    
+
     def flow(self):
         return self._flow
 
-    
     def other(self, u: int):
         if self.start() == u:
             return self.end()
@@ -29,8 +24,7 @@ class Edge:
             return self.start()
         else:
             raise ValueError('Invalid input vertex')
-    
-    
+
     def residual_capacity_to(self, vertex: int):
         if vertex == self.start():
             return self.flow()
@@ -39,7 +33,6 @@ class Edge:
         else:
             raise ValueError('Invalid input vertex')
 
-    
     def add_residual_flow_to(self, vertex: int, delta: float):
         if vertex == self.start():
             self._flow -= delta

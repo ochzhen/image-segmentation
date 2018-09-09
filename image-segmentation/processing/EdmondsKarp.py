@@ -1,7 +1,9 @@
 import queue
 import Graph
+import common
 
-class FordFulkerson:
+
+class EdmondsKarp:
     def __init__(self, graph: Graph.Graph, s: int, t: int):
         self._graph = graph
         self._marked = [False] * graph.vertices()
@@ -9,12 +11,10 @@ class FordFulkerson:
         self._source = s
         self._sink = t
         self._flow = 0
-        
-    
+
     def flow(self):
         return self._flow
-    
-    
+
     def process(self):
         while self._has_augmenting_path(self._source, self._sink):
             bottleneck = float('inf')
@@ -29,12 +29,9 @@ class FordFulkerson:
             self._flow += bottleneck
             print('flow: {0}'.format(self._flow))
 
-    
     def _has_augmenting_path(self, s: int, t: int):
-        for i in range(len(self._edge_to)):
-            self._edge_to[i] = None
-        for i in range(len(self._marked)):
-            self._marked[i] = False
+        common.fill_with_value(self._edge_to, None)
+        common.fill_with_value(self._marked, False)
         q = queue.Queue()
         q.put(s)
         self._marked[s] = True

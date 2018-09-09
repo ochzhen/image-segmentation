@@ -1,6 +1,11 @@
 import math
 import cv2
 
+
+def _distance(r1, c1, r2, c2):
+    return math.sqrt((r2 - r1) ** 2 + (c2 - c1) ** 2)
+
+
 class ImageRegion:
     def __init__(self, path: str, r0: int, c0: int, r1: int, c1: int):
         self.img = cv2.imread(path)
@@ -70,18 +75,16 @@ class ImageRegion:
         return r == self._r0 or r == self._r1 or c == self._c0 or c == self._c1
 
     def _unary_background(self, r, c):
-        return self.distance_to_center(r, c) / self.distance_to_center(self.r0(), self.c0())
+        return 0.4
+        # return self.distance_to_center(r, c) / self.distance_to_center(self.r0(), self.c0())
 
     def distance_to_center(self, r, c):
-        return self._distance(self._cr, self._cc, r, c)
+        return _distance(self._cr, self._cc, r, c)
 
     def binary_cost(self, r0, c0, r1, c1):
-        return math.ceil(self._binary_coef * ((1 / self._distance(r0, c0, r1, c1)) * 
+        return math.ceil(self._binary_coef * ((1 / _distance(r0, c0, r1, c1)) *
             math.exp(-8 - self._beta * self._rgb_distance(r0, c0, r1, c1))))
-    
-    def _distance(self, r1, c1, r2, c2):
-        return math.sqrt((r2 - r1) ** 2 + (c2 - c1) ** 2)
-    
+
     def _rgb_distance(self, r1, c1, r2, c2):
         B1, G1, R1 = map(int, self.img[r1, c1])
         B2, G2, R2 = map(int, self.img[r2, c2])
@@ -96,9 +99,9 @@ class ImageRegion:
     
     def show(self, title):
         cv2.imshow(title, self.img)
-    
+
     def close(self):
         cv2.destroyAllWindows()
-    
+
     def wait_key(self):
         return cv2.waitKey(0)

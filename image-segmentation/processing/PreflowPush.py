@@ -1,12 +1,12 @@
 import Graph
 
+
 class PreflowPush:
     def __init__(self, graph: Graph.Graph, s: int, t: int):
         self._graph = graph
         self._source = s
         self._sink = t
         self._initialize()
-
 
     def _initialize(self):
         self._overflows = [0] * self._graph.vertices()
@@ -15,22 +15,21 @@ class PreflowPush:
 
         for edge in self._graph.adj(self._source):
             w = edge.other(self._source)
-            edge.add_residual_flow_to(w, edge.capacity())
-            self._overflows[w] += edge.capacity()
-
+            flow = edge.residual_capacity_to(w)
+            edge.add_residual_flow_to(w, flow)
+            self._overflows[w] += flow
 
     def flow(self):
         return self._overflows[self._sink]
 
-
     def process(self):
         while True:
+            print('source:{0} sink:{1}'.format(self._overflows[self._source], self._overflows[self._sink]))
             v = self._overflow_vertex_with_max_height()
             if v == -1:
                 break
             if not self._try_push(v):
                 self._relabel(v)
-
 
     def _try_push(self, v: int):
         for edge in self._graph.adj(v):
@@ -40,10 +39,8 @@ class PreflowPush:
                 edge.add_residual_flow_to(w, flow)
                 self._overflows[v] -= flow
                 self._overflows[w] += flow
-                print('add_residual_flow_to({0}, {1})'.format(w, flow))
                 return True
         return False
-    
 
     def _relabel(self, v: int):
         min_height = float('inf')
@@ -51,9 +48,7 @@ class PreflowPush:
             w = edge.other(v)
             if edge.residual_capacity_to(w) > 0 and self._heights[w] < min_height:
                 min_height = self._heights[w]
-        if min_height < float('inf'):
-            self._heights[v] = min_height + 1
-
+        self._heights[v] = min_height + 1
 
     def _overflow_vertex_with_max_height(self):
         vertex = -1

@@ -8,6 +8,9 @@ import ImageRegion as image
 
 
 def main():
+    if len(sys.argv) < 8:
+        raise Exception('Too few arguments')
+
     path = sys.argv[1]
     r0 = int(sys.argv[2])
     c0 = int(sys.argv[3])
@@ -23,17 +26,26 @@ def main():
     
     start_time = time.time()
     
-    if alg == 'ff':
-        flow_finder = algs.FordFulkerson(graph, s, t)
+    if alg == 'ek':
+        flow_finder = algs.EdmondsKarp(graph, s, t)
     elif alg == 'pp':
         flow_finder = algs.PreflowPush(graph, s, t)
+    elif alg == 'pr':
+        flow_finder = algs.PushRelabel(graph, s, t)
+    elif alg == 'prr':
+        flow_finder = algs.PushRelabelRecompute(graph, s, t)
+    elif alg == 'd2':
+        flow_finder = algs.DinicV2(graph, s, t)
+    elif alg == 'd':
+        flow_finder = algs.Dinic(graph, s, t)
     else:
-        flow_finder = algs.Dinic(graph, s, t) 
+        raise Exception('Shortcut "{0}" for algorithm is unknown')
+
     flow_finder.process()
 
     print('Elapsed seconds: {0}'.format(time.time() - start_time))
 
-    print('max flow: {0}'.format(flow_finder.flow()))
+    print('Max flow: {0}'.format(flow_finder.flow()))
 
     border_finder = algs.BorderFinder(graph, s)
     for v in border_finder.border_vertices((s, t)):

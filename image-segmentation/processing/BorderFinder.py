@@ -1,13 +1,13 @@
 import queue
 import Graph
 
+
 class BorderFinder:
     def __init__(self, graph: Graph.Graph, s: int):
         self._graph = graph
         self._reached = [False] * graph.vertices()
         self._explore_reachable_vertices(s)
 
-    
     def _explore_reachable_vertices(self, s: int):
         q = queue.Queue()
         q.put(s)
@@ -20,12 +20,11 @@ class BorderFinder:
                     self._reached[w] = True
                     q.put(w)
 
-    
     def border_vertices(self, excluded):
         vertices = set()
         for e in self._graph.edges():
-            if ((self._reached[e.start()] and not self._reached[e.end()] or 
-                    not self._reached[e.start()] and self._reached[e.end()]) and 
+            if ((self._reached[e.start()] and not self._reached[e.end()] or
+                 not self._reached[e.start()] and self._reached[e.end()]) and
                     e.start() not in excluded and e.end() not in excluded):
                 vertices.add(e.start())
                 vertices.add(e.end())
