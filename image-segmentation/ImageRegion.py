@@ -15,13 +15,14 @@ class ImageRegion:
         self._c1 = c1
         self._cr = (r0 + r1) / 2
         self._cc = (c0 + c1) / 2
-        self.deltas = [(0, 1), (1, -1), (1, 0), (1, 1)]
+        self.deltas = [(1, -1), (1, 0), (1, 1), (0, 1)]
         self._alpha = 8
         rgb_distance = self.max_rgb_distance()
         self._beta = 80 / rgb_distance if rgb_distance > 0 else 1
         self._binary_coef = 100000000
-        self._unary_coef = 1000
-    
+        self._unary_coef = 100
+        self._max_distance = self.distance_to_center(self._r0, self._c0)
+
     def max_rgb_distance(self):
         max_distance = float('-inf')
         r0 = self.r0()
@@ -38,7 +39,7 @@ class ImageRegion:
 
     def r0(self):
         return self._r0
-    
+
     def c0(self):
         return self._c0
 
@@ -55,7 +56,7 @@ class ImageRegion:
         r -= self._r0
         c -= self._c0
         return r * self.width() + c
-    
+
     def get_coordinate(self, id):
         r = id // self.width()
         c = id % self.width()
@@ -75,28 +76,30 @@ class ImageRegion:
         return r == self._r0 or r == self._r1 or c == self._c0 or c == self._c1
 
     def _unary_background(self, r, c):
-        return 0.4
-        # return self.distance_to_center(r, c) / self.distance_to_center(self.r0(), self.c0())
+        k: int = 25
+        ratio: float = self.distance_to_center(r, c) / self._max_distance
+        probability = 1 / (k * (1 - ratio))
+        return probability if probability <= 1 else 1
 
     def distance_to_center(self, r, c):
         return _distance(self._cr, self._cc, r, c)
 
     def binary_cost(self, r0, c0, r1, c1):
         return math.ceil(self._binary_coef * ((1 / _distance(r0, c0, r1, c1)) *
-            math.exp(-8 - self._beta * self._rgb_distance(r0, c0, r1, c1))))
+                                              math.exp(-8 - self._beta * self._rgb_distance(r0, c0, r1, c1))))
 
     def _rgb_distance(self, r1, c1, r2, c2):
         B1, G1, R1 = map(int, self.img[r1, c1])
         B2, G2, R2 = map(int, self.img[r2, c2])
         return math.sqrt((B2 - B1) ** 2 + (G2 - G1) ** 2 + (R2 - R1) ** 2)
-    
+
     def set_yellow(self, v_id):
         r, c = self.get_coordinate(v_id)
         self.img[r, c] = [0, 255, 255]
-    
+
     def save(self, path: str):
         cv2.imwrite(path, self.img)
-    
+
     def show(self, title):
         cv2.imshow(title, self.img)
 
