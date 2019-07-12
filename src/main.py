@@ -3,7 +3,7 @@ import time
 import cv2
 
 import GraphBuilder as gb
-import processing as algs
+import algorithms as algs
 import ImageRegion as image
 
 
