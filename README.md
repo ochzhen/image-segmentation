@@ -12,15 +12,15 @@ A simple program that separates an image into foreground and background inside o
 The idea is to represent each pixel as a vertex of the graph and also have two more vertices - source and sink.
 Each pixel is connected to adjacent pixels and to the source and the sink.
 
-Clearly this approach has many limitations but it works on simple input.
+Clearly, this approach has many limitations but it works on simple input.
 
 In general, the process consists of the following steps:
 * Represent each pixel as a graph vertex
 * Add two terminal vertices: source and sink (red and blue on the picture)
-* Connect each non-terminal vertex with neighbours (binary component) and with terminal vertices (unary component)
+* Connect each non-terminal vertex with neighbors (binary component) and with terminal vertices (unary component)
 * Find minimum cut
 
-Minimum cut gives the separation between foreground and background because all vertices are divided into two sets: reachable from source vertex and non-reachable.
+The minimum cut gives the separation between foreground and background because all vertices are divided into two sets: reachable from source vertex and non-reachable.
 
 ## Algorithms
 
